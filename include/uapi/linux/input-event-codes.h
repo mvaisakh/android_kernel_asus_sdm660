@@ -604,7 +604,7 @@
 #define KEY_BRIGHTNESS_MIN		0x250	/* Set Brightness to Minimum */
 #define KEY_BRIGHTNESS_MAX		0x251	/* Set Brightness to Maximum */
 
-#ifdef CONFIG_MACH_ASUS_X00TD
+#ifdef CONFIG_MACH_ASUS_SDM660
 #if defined(CONFIG_CDFINGER_FP) || defined(CONFIG_GOODIX_FP)
 #define FP_KEY_UP		0x258
 #define FP_KEY_DOWN		0x259
