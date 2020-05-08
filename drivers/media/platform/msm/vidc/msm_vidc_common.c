@@ -720,7 +720,7 @@ static void put_inst(struct msm_vidc_inst *inst)
 				struct msm_vidc_inst, kref);
 
 		msm_vidc_destroy(inst);
-	}
+	};
 
 	if (!inst)
 		return;
