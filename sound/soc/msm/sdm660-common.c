@@ -33,6 +33,10 @@
 #define DEFAULT_MCLK_RATE 9600000
 #define MSM_LL_QOS_VALUE 300 /* time in us to ensure LPM doesn't go in C3/C4 */
 
+#ifdef CONFIG_INPUT_SX9310
+extern void sar_switch(bool);
+#endif
+
 struct dev_config {
 	u32 sample_rate;
 	u32 bit_format;
@@ -234,7 +238,7 @@ static struct dev_config mi2s_rx_cfg[] = {
 static struct dev_config mi2s_tx_cfg[] = {
 	[PRIM_MI2S] = {SAMPLING_RATE_48KHZ, SNDRV_PCM_FORMAT_S16_LE, 1},
 	[SEC_MI2S]  = {SAMPLING_RATE_48KHZ, SNDRV_PCM_FORMAT_S16_LE, 1},
-	[TERT_MI2S] = {SAMPLING_RATE_48KHZ, SNDRV_PCM_FORMAT_S16_LE, 1},
+	[TERT_MI2S] = {SAMPLING_RATE_48KHZ, SNDRV_PCM_FORMAT_S16_LE, 2},
 	[QUAT_MI2S] = {SAMPLING_RATE_48KHZ, SNDRV_PCM_FORMAT_S16_LE, 1},
 };
 
@@ -2525,6 +2529,8 @@ int msm_mi2s_snd_startup(struct snd_pcm_substream *substream)
 	int index = cpu_dai->id;
 	unsigned int fmt = SND_SOC_DAIFMT_CBS_CFS;
 
+	struct msm_asoc_mach_data *pdata = snd_soc_card_get_drvdata(rtd->card);
+
 	dev_dbg(rtd->card->dev,
 		"%s: substream = %s  stream = %d, dai name %s, dai ID %d\n",
 		__func__, substream->name, substream->stream,
@@ -2575,6 +2581,10 @@ int msm_mi2s_snd_startup(struct snd_pcm_substream *substream)
 				goto clk_off;
 			}
 		}
+		if (index == TERT_MI2S) {
+		    msm_cdc_pinctrl_select_active_state(pdata->tert_mi2s_gpio_p);
+			printk("daixianze %s tert_mi2s_gpio_p\n", __func__);
+		}
 	}
 	mutex_unlock(&mi2s_intf_conf[index].lock);
 	return 0;
@@ -2602,13 +2612,18 @@ void msm_mi2s_snd_shutdown(struct snd_pcm_substream *substream)
 	int port_id = msm_get_port_id(rtd->dai_link->be_id);
 	int index = rtd->cpu_dai->id;
 
+	struct msm_asoc_mach_data *pdata = snd_soc_card_get_drvdata(rtd->card);
+
 	pr_debug("%s(): substream = %s  stream = %d\n", __func__,
 		 substream->name, substream->stream);
 	if (index < PRIM_MI2S || index > QUAT_MI2S) {
 		pr_err("%s:invalid MI2S DAI(%d)\n", __func__, index);
 		return;
 	}
-
+	if (index == TERT_MI2S)
+		{
+		    msm_cdc_pinctrl_select_sleep_state(pdata->tert_mi2s_gpio_p);
+		}
 	mutex_lock(&mi2s_intf_conf[index].lock);
 	if (--mi2s_intf_conf[index].ref_cnt == 0) {
 		ret = msm_mi2s_set_sclk(substream, false);
@@ -3144,6 +3159,8 @@ static int msm_asoc_machine_probe(struct platform_device *pdev)
 					"qcom,cdc-dmic-gpios", 0);
 		pdata->ext_spk_gpio_p = of_parse_phandle(pdev->dev.of_node,
 					"qcom,cdc-ext-spk-gpios", 0);
+		pdata->tert_mi2s_gpio_p = of_parse_phandle(pdev->dev.of_node,
+				    "qcom,tert-mi2s-gpios", 0);
 	}
 
 	/*
