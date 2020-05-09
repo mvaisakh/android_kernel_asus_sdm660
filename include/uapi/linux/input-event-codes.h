@@ -816,6 +816,12 @@
 #define SND_CNT			(SND_MAX+1)
 
 /*
+ * SX9310 SAR Sensor Input
+ */
+#define KEY_SARSENSOR_NEAR	0x2ea
+#define KEY_SARSENSOR_FAR	0x2eb
+
+/*
  * Asus Fingerprint Gestures
  */
 #define FP_KEY_UP		0x258
