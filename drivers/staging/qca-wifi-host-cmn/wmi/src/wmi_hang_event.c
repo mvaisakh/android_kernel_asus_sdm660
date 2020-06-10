@@ -28,7 +28,7 @@ struct wmi_hang_data_fixed_param {
 
 #define WMI_EVT_HIST 0
 #define WMI_CMD_HIST 1
-
+#ifdef WLAN_DEBUG
 static void wmi_log_history(struct notifier_block *block, void *data,
 			    uint8_t wmi_history)
 {
@@ -59,7 +59,6 @@ static void wmi_log_history(struct notifier_block *block, void *data,
 		wmi_log = &wmi_handle->log_info.wmi_event_log_buf_info;
 	else
 		wmi_log = &wmi_handle->log_info.wmi_command_log_buf_info;
-
 	total_len = sizeof(struct wmi_hang_data_fixed_param);
 
 	if (wmi_log->length <= wmi_ring_size)
@@ -134,3 +133,4 @@ QDF_STATUS wmi_hang_event_notifier_unregister(void)
 {
 	return qdf_hang_event_unregister_notifier(&wmi_recovery_notifier);
 }
+#endif

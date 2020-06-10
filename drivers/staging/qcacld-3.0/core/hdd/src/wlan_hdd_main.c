@@ -14144,7 +14144,9 @@ static void hdd_driver_unload(void)
 		hdd_context_destroy(hdd_ctx);
 
 	pld_deinit();
+#ifdef MODULE
 	wlan_hdd_state_ctrl_param_destroy();
+#endif
 	hdd_set_conparam(0);
 	qdf_wake_lock_destroy(&wlan_wake_lock);
 	hdd_component_deinit();
