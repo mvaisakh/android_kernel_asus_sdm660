@@ -1,3 +1,4 @@
+ccflags-y += -Wno-bool-operation
 obj-$(CONFIG_CRYPTO_DEV_QCEDEV) += qcedev.o
 ifeq ($(CONFIG_CRYPTO_DEV_QCE50), y)
         obj-$(CONFIG_CRYPTO_DEV_QCOM_MSM_QCE) += qce50.o
