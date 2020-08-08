@@ -13,4 +13,3 @@ config TOUCHSCREEN_HIMAX_CHIPSET
 
 source "drivers/input/touchscreen/Asus/hxchipset/Kconfig"
 source "drivers/input/touchscreen/Asus/NVT_Touch/Kconfig"
-source "drivers/input/touchscreen/Asus/synaptics_dsx/Kconfig"
