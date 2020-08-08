@@ -1,14 +1,18 @@
-/* 
- * Copyright (C) 2014-2020 NXP Semiconductors, All Rights Reserved.
- * Copyright 2020 GOODIX 
+/*
+ * Copyright 2014-2017 NXP Semiconductors
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2 as
- * published by the Free Software Foundation.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
-
 
 #ifndef TFA_SERVICE_H
 #define TFA_SERVICE_H
@@ -23,7 +27,7 @@
 #endif
 #ifdef __cplusplus
 extern "C" {
-#include "TFA_I2C.h"
+#include "NXP_I2C.h"
 #endif
 
 /* Linux kernel module defines TFA98XX_GIT_VERSIONS in the linux_driver/Makefile */
@@ -31,9 +35,9 @@ extern "C" {
 #include "versions.h"
 #endif
 #ifdef TFA98XX_GIT_VERSIONS
-  #define TFA98XX_API_REV_STR "v6.7.1"/*TFA98XX_GIT_VERSIONS*/
+  #define TFA98XX_API_REV_STR TFA98XX_GIT_VERSIONS
 #else
-  #define TFA98XX_API_REV_STR "v6.7.1"
+  #define TFA98XX_API_REV_STR "v6.5.0"
 #endif
 
 #include "tfa_device.h"
@@ -262,13 +266,13 @@ struct Tfa98xx_StateInfo {
 	struct Tfa98xx_DrcStateInfo drcState; /* DRC state, when enabled */
 };
 
-typedef struct TfaMsg {
+typedef struct nxpTfaMsg {
 	uint8_t msg_size;
 	unsigned char cmdId[3];
 	int data[9];
-} TfaMsg_t;
+} nxpTfaMsg_t;
 
-typedef struct tfa_vstep_msg {
+typedef struct nxp_vstep_msg {
 	int			fw_version;
 	uint8_t		no_of_vsteps;
 	uint16_t	reg_no;
@@ -280,15 +284,15 @@ typedef struct tfa_vstep_msg {
 	uint8_t		*msg_filter_coef;
 	uint32_t	mbdrc_length;
     uint8_t		*msg_mbdrc;
-} tfa_vstep_msg_t;
+} nxp_vstep_msg_t;
 
-typedef struct TfaGroup {
+typedef struct nxpTfaGroup {
 	uint8_t msg_size;
 	uint8_t profileId[64];
-} TfaGroup_t;
+} nxpTfaGroup_t;
 
 
-struct Tfa98xx_Memtrack_data {
+struct nxpTfa98xx_Memtrack_data {
 	int length;
 	float mValues[MEMTRACK_MAX_WORDS];
 	int mAdresses[MEMTRACK_MAX_WORDS];
@@ -766,7 +770,7 @@ enum Tfa98xx_Error mem_write(struct tfa_device *tfa, unsigned short address, int
 enum Tfa98xx_Error mem_read(struct tfa_device *tfa, unsigned int start_offset, int num_words, int *pValues);
 
 enum Tfa98xx_Error dsp_partial_coefficients(struct tfa_device *tfa, uint8_t *prev, uint8_t *next);
-int is_94_N2_device(struct tfa_device *tfa);
+
 /**
  * write/read raw msg functions:
  * the buffer is provided in little endian format, each word occupying 3 bytes, length is in bytes.
@@ -1011,7 +1015,6 @@ enum Tfa98xx_Error tfa_status(struct tfa_device *tfa);
  */
 int tfa_dev_get_mtpb(struct tfa_device *tfa);
 
-enum Tfa98xx_Error tfaGetFwApiVersion(struct tfa_device *tfa, unsigned char *pFirmwareVersion);
 #ifdef __cplusplus
 }
 #endif
